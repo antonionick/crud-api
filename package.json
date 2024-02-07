@@ -2,11 +2,24 @@
   "name": "crud-api",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "tsc --watch"
   },
   "keywords": [],
   "author": "Anton Halauko",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "20.11.16",
+    "@typescript-eslint/eslint-plugin": "6.21.0",
+    "@typescript-eslint/parser": "6.21.0",
+    "eslint": "8.56.0",
+    "eslint-config-prettier": "9.1.0",
+    "prettier": "3.2.5",
+    "typescript": "5.3.3"
+  },
+  "dependencies": {
+    "uuid": "9.0.1"
+  }
 }
