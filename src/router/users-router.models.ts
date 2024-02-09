@@ -1,2 +1,2 @@
-export const GET_ALL_USERS_ENDPOINT = /^\/api\/users$/i;
-export const GET_USER_BY_ID_ENDPOINT = /^\/api\/users\/(.+)$/i;
+export const API_USERS_REGEX = /^\/api\/users$/i;
+export const API_USERS_ID_REGEX = /^\/api\/users\/(.+)$/i;

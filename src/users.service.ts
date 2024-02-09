@@ -15,4 +15,10 @@ export class UsersService {
 
     return user;
   }
+
+  public async createUser(userName: string, age: number, hobbies: string[]): Promise<UserModel> {
+    const user = await this.usersDatabase.createUser(userName, age, hobbies);
+
+    return user;
+  }
 }

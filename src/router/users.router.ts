@@ -1,15 +1,18 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { UsersController } from '../users.controller.js';
-import { GET_ALL_USERS_ENDPOINT, GET_USER_BY_ID_ENDPOINT } from './users-router.models.js';
+import { API_USERS_REGEX, API_USERS_ID_REGEX } from './users-router.models.js';
 
 export const usersRouterFabric =
   (userController: UsersController) =>
   async (req: IncomingMessage, res: ServerResponse): Promise<boolean> => {
-    if (req.method === 'GET' && GET_ALL_USERS_ENDPOINT.test(req.url ?? '')) {
+    if (req.method === 'GET' && API_USERS_REGEX.test(req.url ?? '')) {
       await userController.handleAllUsersRequest(req, res);
       return true;
-    } else if (req.method === 'GET' && GET_USER_BY_ID_ENDPOINT.test(req.url ?? '')) {
+    } else if (req.method === 'GET' && API_USERS_ID_REGEX.test(req.url ?? '')) {
       await userController.handleUserByIdRequest(req, res);
+      return true;
+    } else if (req.method === 'POST' && API_USERS_REGEX.test(req.url ?? '')) {
+      await userController.handleCreateUser(req, res);
       return true;
     }
 
