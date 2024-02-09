@@ -1,7 +1,7 @@
-import { randomUUID } from 'crypto';
+import * as uuid from 'uuid';
 
 export class UserModel {
-  public readonly id = randomUUID();
+  public readonly id = uuid.v4();
 
   constructor(
     public readonly userName: string,

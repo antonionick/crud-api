@@ -9,4 +9,10 @@ export class UsersService {
 
     return users;
   }
+
+  public async getUserById(id: string): Promise<UserModel> {
+    const user = await this.usersDatabase.getUserById(id);
+
+    return user;
+  }
 }
