@@ -6,16 +6,19 @@ export const usersRouterFabric =
   (userController: UsersController) =>
   async (req: IncomingMessage, res: ServerResponse): Promise<boolean> => {
     if (req.method === 'GET' && API_USERS_REGEX.test(req.url ?? '')) {
-      await userController.handleAllUsersRequest(req, res);
+      await userController.getAllUsers(req, res);
       return true;
     } else if (req.method === 'GET' && API_USERS_ID_REGEX.test(req.url ?? '')) {
-      await userController.handleUserByIdRequest(req, res);
+      await userController.getUserById(req, res);
       return true;
     } else if (req.method === 'POST' && API_USERS_REGEX.test(req.url ?? '')) {
-      await userController.handleCreateUser(req, res);
+      await userController.createUser(req, res);
       return true;
     } else if (req.method === 'PUT' && API_USERS_ID_REGEX.test(req.url ?? '')) {
-      await userController.handleUpdateUser(req, res);
+      await userController.updateUser(req, res);
+      return true;
+    } else if (req.method === 'DELETE' && API_USERS_ID_REGEX.test(req.url ?? '')) {
+      await userController.deleteUser(req, res);
       return true;
     }
 

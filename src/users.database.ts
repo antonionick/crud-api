@@ -37,4 +37,8 @@ export class UsersDatabase {
 
     return updatedUser;
   }
+
+  public deleteUserById(usedId: string): void {
+    this.storage.delete(usedId);
+  }
 }

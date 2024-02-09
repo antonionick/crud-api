@@ -6,7 +6,7 @@ import { UsersDatabase } from './users.database.js';
 export class UsersController {
   constructor(private readonly usersDatabase: UsersDatabase) {}
 
-  public async handleAllUsersRequest(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  public async getAllUsers(req: IncomingMessage, res: ServerResponse): Promise<void> {
     const users = this.usersDatabase.getAllUsers();
 
     res
@@ -16,7 +16,7 @@ export class UsersController {
       .end(JSON.stringify(users));
   }
 
-  public async handleUserByIdRequest(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  public async getUserById(req: IncomingMessage, res: ServerResponse): Promise<void> {
     const [, userId] = req.url!.match(API_USERS_ID_REGEX)!;
 
     if (!uuid.validate(userId)) {
@@ -38,7 +38,7 @@ export class UsersController {
       .end(JSON.stringify(user));
   }
 
-  public handleCreateUser(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  public createUser(req: IncomingMessage, res: ServerResponse): Promise<void> {
     return new Promise((resolve, reject) => {
       req.on('data', async (rawData) => {
         try {
@@ -51,11 +51,7 @@ export class UsersController {
             return;
           }
 
-          const createdUser = this.usersDatabase.createUser(
-            data.userName,
-            data.age,
-            data.hobbies,
-          );
+          const createdUser = this.usersDatabase.createUser(data.userName, data.age, data.hobbies);
 
           res.writeHead(201).end(JSON.stringify(createdUser));
           resolve();
@@ -66,7 +62,7 @@ export class UsersController {
     });
   }
 
-  public async handleUpdateUser(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  public async updateUser(req: IncomingMessage, res: ServerResponse): Promise<void> {
     const [, userId] = req.url!.match(API_USERS_ID_REGEX)!;
 
     if (!uuid.validate(userId)) {
@@ -96,5 +92,25 @@ export class UsersController {
         }
       });
     });
+  }
+
+  public async deleteUser(req: IncomingMessage, res: ServerResponse): Promise<void> {
+    const [, userId] = req.url!.match(API_USERS_ID_REGEX)!;
+
+    if (!uuid.validate(userId)) {
+      res.writeHead(400).end(JSON.stringify({ message: 'invalid user id' }));
+      return;
+    }
+
+    const user = this.usersDatabase.getUserById(userId);
+
+    if (!user) {
+      res.writeHead(404).end(JSON.stringify({ message: 'user does not exist' }));
+      return;
+    }
+
+    this.usersDatabase.deleteUserById(userId);
+
+    res.writeHead(204).end();
   }
 }
