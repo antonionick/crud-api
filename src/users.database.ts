@@ -19,4 +19,22 @@ export class UsersDatabase {
 
     return user;
   }
+
+  public async updateUserById(
+    userId: string,
+    userToUpdate: Partial<UserModel>,
+  ): Promise<UserModel> {
+    const user = this.storage.get(userId)!;
+
+    const updatedUser: UserModel = {
+      ...user,
+      ...userToUpdate,
+    };
+
+    Object.setPrototypeOf(updatedUser, UserModel.prototype);
+
+    this.storage.set(userId, updatedUser);
+
+    return updatedUser;
+  }
 }

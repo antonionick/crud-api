@@ -38,7 +38,7 @@ export class UsersController {
       .end(JSON.stringify(user));
   }
 
-  public async handleCreateUser(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  public handleCreateUser(req: IncomingMessage, res: ServerResponse): Promise<void> {
     return new Promise((resolve, reject) => {
       req.on('data', async (rawData) => {
         try {
@@ -58,6 +58,38 @@ export class UsersController {
           );
 
           res.writeHead(201).end(JSON.stringify(createdUser));
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      });
+    });
+  }
+
+  public async handleUpdateUser(req: IncomingMessage, res: ServerResponse): Promise<void> {
+    const [, userId] = req.url!.match(API_USERS_ID_REGEX)!;
+
+    if (!uuid.validate(userId)) {
+      res.writeHead(400).end(JSON.stringify({ message: 'invalid user id' }));
+      return;
+    }
+
+    const user = await this.usersDatabase.getUserById(userId);
+
+    if (!user) {
+      res.writeHead(404).end(JSON.stringify({ message: 'user does not exist' }));
+      return;
+    }
+
+    return new Promise((resolve, reject) => {
+      req.on('data', async (rawData) => {
+        try {
+          const stringifiedData = rawData.toString();
+          const data = JSON.parse(stringifiedData);
+
+          const updatedUser = await this.usersDatabase.updateUserById(userId, data);
+
+          res.writeHead(200).end(JSON.stringify(updatedUser));
           resolve();
         } catch (err) {
           reject(err);

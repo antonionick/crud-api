@@ -14,6 +14,9 @@ export const usersRouterFabric =
     } else if (req.method === 'POST' && API_USERS_REGEX.test(req.url ?? '')) {
       await userController.handleCreateUser(req, res);
       return true;
+    } else if (req.method === 'PUT' && API_USERS_ID_REGEX.test(req.url ?? '')) {
+      await userController.handleUpdateUser(req, res);
+      return true;
     }
 
     return false;
