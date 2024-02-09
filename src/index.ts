@@ -1,12 +1,10 @@
 import * as http from 'node:http';
 import { UsersDatabase } from './users.database.js';
-import { UsersService } from './users.service.js';
 import { UsersController } from './users.controller.js';
 import { usersRouterFabric } from './router/users.router.js';
 
 const usersDatabase = new UsersDatabase();
-const usersService = new UsersService(usersDatabase);
-const usersController = new UsersController(usersService);
+const usersController = new UsersController(usersDatabase);
 
 const usersRouter = usersRouterFabric(usersController);
 

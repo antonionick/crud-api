@@ -1,13 +1,13 @@
 import { IncomingMessage, ServerResponse } from 'node:http';
 import * as uuid from 'uuid';
-import { UsersService } from './users.service.js';
 import { API_USERS_ID_REGEX } from './router/users-router.models.js';
+import { UsersDatabase } from './users.database.js';
 
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersDatabase: UsersDatabase) {}
 
   public async handleAllUsersRequest(req: IncomingMessage, res: ServerResponse): Promise<void> {
-    const users = await this.usersService.getAllUsers();
+    const users = await this.usersDatabase.getAllUsers();
 
     res
       .writeHead(200, {
@@ -24,7 +24,7 @@ export class UsersController {
       return;
     }
 
-    const user = await this.usersService.getUserById(userId);
+    const user = await this.usersDatabase.getUserById(userId);
 
     if (!user) {
       res.writeHead(404).end(JSON.stringify({ message: 'user does not exist' }));
@@ -51,7 +51,7 @@ export class UsersController {
             return;
           }
 
-          const createdUser = await this.usersService.createUser(
+          const createdUser = await this.usersDatabase.createUser(
             data.userName,
             data.age,
             data.hobbies,
