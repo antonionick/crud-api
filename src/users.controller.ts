@@ -7,7 +7,7 @@ export class UsersController {
   constructor(private readonly usersDatabase: UsersDatabase) {}
 
   public async handleAllUsersRequest(req: IncomingMessage, res: ServerResponse): Promise<void> {
-    const users = await this.usersDatabase.getAllUsers();
+    const users = this.usersDatabase.getAllUsers();
 
     res
       .writeHead(200, {
@@ -24,7 +24,7 @@ export class UsersController {
       return;
     }
 
-    const user = await this.usersDatabase.getUserById(userId);
+    const user = this.usersDatabase.getUserById(userId);
 
     if (!user) {
       res.writeHead(404).end(JSON.stringify({ message: 'user does not exist' }));
@@ -51,7 +51,7 @@ export class UsersController {
             return;
           }
 
-          const createdUser = await this.usersDatabase.createUser(
+          const createdUser = this.usersDatabase.createUser(
             data.userName,
             data.age,
             data.hobbies,
@@ -74,7 +74,7 @@ export class UsersController {
       return;
     }
 
-    const user = await this.usersDatabase.getUserById(userId);
+    const user = this.usersDatabase.getUserById(userId);
 
     if (!user) {
       res.writeHead(404).end(JSON.stringify({ message: 'user does not exist' }));
@@ -87,7 +87,7 @@ export class UsersController {
           const stringifiedData = rawData.toString();
           const data = JSON.parse(stringifiedData);
 
-          const updatedUser = await this.usersDatabase.updateUserById(userId, data);
+          const updatedUser = this.usersDatabase.updateUserById(userId, data);
 
           res.writeHead(200).end(JSON.stringify(updatedUser));
           resolve();

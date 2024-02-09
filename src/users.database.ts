@@ -3,16 +3,16 @@ import { UserModel } from './users.model.js';
 export class UsersDatabase {
   private readonly storage = new Map<string, UserModel>();
 
-  public async getAllUsers(): Promise<UserModel[]> {
+  public getAllUsers(): UserModel[] {
     return Array.from(this.storage.values());
   }
 
-  public async getUserById(id: string): Promise<UserModel> {
+  public getUserById(id: string): UserModel {
     const user = this.storage.get(id);
     return user!;
   }
 
-  public async createUser(userName: string, age: number, hobbies: string[]): Promise<UserModel> {
+  public createUser(userName: string, age: number, hobbies: string[]): UserModel {
     const user = new UserModel(userName, age, hobbies);
 
     this.storage.set(user.id, user);
@@ -20,10 +20,10 @@ export class UsersDatabase {
     return user;
   }
 
-  public async updateUserById(
+  public updateUserById(
     userId: string,
     userToUpdate: Partial<UserModel>,
-  ): Promise<UserModel> {
+  ): UserModel {
     const user = this.storage.get(userId)!;
 
     const updatedUser: UserModel = {
