@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import * as http from 'node:http';
 import { UsersDatabase } from './users.database.js';
 import { UsersController } from './users.controller.js';
@@ -20,4 +21,4 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(8000);
+server.listen(Number(process.env.PORT));
