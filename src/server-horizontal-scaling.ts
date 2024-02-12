@@ -25,9 +25,22 @@ if (cluster.isPrimary) {
     const workerPort = Number(process.env.PORT) + workerIndexToProcessRequest;
     const urlToRedirect = `http://${hostUrl.hostname}:${workerPort}${hostUrl.pathname}`;
 
-    res.writeHead(307, {
-      location: urlToRedirect,
-    }).end();
+    res
+      .writeHead(307, {
+        location: urlToRedirect,
+      })
+      .end();
+
+    const worker = cluster.workers![workerIndexToProcessRequest];
+
+    worker?.once('message', () => {
+      const storage = usersDatabase.getStorage();
+      worker?.send(storage);
+
+      worker.once('message', (value) => {
+        usersDatabase.setStorage(value);
+      });
+    });
 
     if (workerIndexToProcessRequest === workersCount) {
       workerIndexToProcessRequest = 1;
@@ -39,15 +52,24 @@ if (cluster.isPrimary) {
   server.listen(primaryServerPort);
 } else {
   const server = http.createServer(async (req, res) => {
-    try {
-      const isHandled = await usersRouter(req, res);
+    process.send!('give state');
 
-      if (!isHandled) {
-        res.writeHead(404).end(JSON.stringify({ message: 'Not existing endpoint' }));
+    process.once('message', async (value: string) => {
+      usersDatabase.setStorage(value);
+
+      try {
+        const isHandled = await usersRouter(req, res);
+
+        if (!isHandled) {
+          res.writeHead(404).end(JSON.stringify({ message: 'Not existing endpoint' }));
+        } else {
+          const storage = usersDatabase.getStorage();
+          process.send!(storage);
+        }
+      } catch (err) {
+        res.writeHead(500).end(JSON.stringify({ message: 'Something went wrong' }));
       }
-    } catch (err) {
-      res.writeHead(500).end(JSON.stringify({ message: 'Something went wrong' }));
-    }
+    });
   });
 
   server.listen(Number(process.env.workerPort));

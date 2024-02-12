@@ -3,6 +3,22 @@ import { UserModel } from './users.model.js';
 export class UsersDatabase {
   private readonly storage = new Map<string, UserModel>();
 
+  public setStorage(stringifiedStorage: string): void {
+    this.storage.clear();
+
+    const usersModelsList: UserModel[] = JSON.parse(stringifiedStorage);
+
+    for (const userModel of usersModelsList) {
+      this.storage.set(userModel.id, userModel);
+    }
+  }
+
+  public getStorage(): string {
+    const usersModelsList = Array.from(this.storage.values());
+
+    return JSON.stringify(usersModelsList);
+  }
+
   public getAllUsers(): UserModel[] {
     return Array.from(this.storage.values());
   }
