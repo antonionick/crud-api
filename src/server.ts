@@ -1,12 +1,11 @@
 import 'dotenv/config';
-import * as http from 'node:http';
+import http from 'node:http';
 import { UsersDatabase } from './users.database.js';
 import { UsersController } from './users.controller.js';
 import { usersRouterFabric } from './router/users.router.js';
 
 const usersDatabase = new UsersDatabase();
 const usersController = new UsersController(usersDatabase);
-
 const usersRouter = usersRouterFabric(usersController);
 
 const server = http.createServer(async (req, res) => {
